@@ -27,28 +27,28 @@ $GLOBALS['TL_DCA']['tl_metamodel_attribute']['metapalettes']['linkedtags extends
 
 $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['mm_table'] = array
 (
-	'label'                 => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['mm_table'],
-	'exclude'               => true,
-	'inputType'             => 'select',
-	'options_callback'      => array('TableMetaModelsAttributeLinkedTags', 'getMMNames'),
-	'eval'                  => array
-	(
-		'includeBlankOption' => true,
-		'doNotSaveEmpty' => true,
-		'alwaysSave' => true,
-		'submitOnChange'=> true,
-		'tl_class' => 'w50',
-		'chosen' => 'true'
-	),
+    'label'            => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['mm_table'],
+    'exclude'          => true,
+    'inputType'        => 'select',
+    'options_callback' => array('MetaModels\Dca\AttributeLinkedTags', 'getMMNames'),
+    'eval'             => array
+    (
+        'includeBlankOption' => true,
+        'doNotSaveEmpty'     => true,
+        'alwaysSave'         => true,
+        'submitOnChange'     => true,
+        'tl_class'           => 'w50',
+        'chosen'             => 'true'
+    ),
 );
 
 $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['mm_sorting'] = array
 (
-    'label'                 => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['mm_sorting'],
-    'exclude'               => true,
-    'inputType'             => 'select',
-    'options_callback'      => array('TableMetaModelsAttributeLinkedTags', 'getColumnNames'),
-    'eval'                  => array
+    'label'            => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['mm_sorting'],
+    'exclude'          => true,
+    'inputType'        => 'select',
+    'options_callback' => array('MetaModels\Dca\AttributeLinkedTags', 'getColumnNames'),
+    'eval'             => array
     (
         'includeBlankOption' => true,
         'doNotSaveEmpty' => true,
@@ -61,35 +61,35 @@ $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['mm_sorting'] = array
 
 $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['mm_displayedValue'] = array
 (
-	'label'                 => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['mm_displayedValue'],
-	'exclude'               => true,
-	'inputType'             => 'select',
-	'options_callback'      => array('TableMetaModelsAttributeLinkedTags', 'getColumnNames'),
-	'eval'                  => array
-	(
-		'includeBlankOption' => true,
-		'doNotSaveEmpty' => true,
-		'alwaysSave' => true,
-		'submitOnChange'=> true,
-		'tl_class' => 'w50',
-		'chosen' => 'true'
-	),
+    'label'            => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['mm_displayedValue'],
+    'exclude'          => true,
+    'inputType'        => 'select',
+    'options_callback' => array('MetaModels\Dca\AttributeLinkedTags', 'getColumnNames'),
+    'eval'             => array
+    (
+        'includeBlankOption' => true,
+        'doNotSaveEmpty'     => true,
+        'alwaysSave'         => true,
+        'submitOnChange'     => true,
+        'tl_class'           => 'w50',
+        'chosen'             => 'true'
+    ),
 );
 
 $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['mm_filter'] = array
 (
-	'label'                 => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['mm_filterSql'],
-	'exclude'               => true,
-	'inputType'             => 'select',
-	'options_callback'      => array('TableMetaModelsAttributeLinkedTags', 'getFilters'),
-	'eval'                  => array
-	(
-		'includeBlankOption' => true,		
-		'alwaysSave' => true,
-		'submitOnChange'=> true,
-		'tl_class' => 'w50',
-		'chosen' => 'true'
-	),
+    'label'            => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['mm_filterSql'],
+    'exclude'          => true,
+    'inputType'        => 'select',
+    'options_callback' => array('MetaModels\Dca\AttributeLinkedTags', 'getFilters'),
+    'eval'             => array
+    (
+        'includeBlankOption' => true,
+        'alwaysSave'         => true,
+        'submitOnChange'     => true,
+        'tl_class'           => 'w50',
+        'chosen'             => 'true'
+    ),
 );
 
 $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['mm_filterparams'] = array

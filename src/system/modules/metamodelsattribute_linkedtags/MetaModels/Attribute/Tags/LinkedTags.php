@@ -14,10 +14,13 @@
  * @filesource
  */
 
-use MetaModels\Attribute\BaseComplex as MetaModelAttributeComplex;
+namespace MetaModels\Attribute\Tags;
+
+use MetaModels\Attribute\AbstractHybrid as MetaModelAttributeHybrid;
+use MetaModels\Filter\Rules\StaticIdList;
+use MetaModels\Filter\Setting\Factory as FilterSettingFactory;
 use MetaModels\Render\Template as MetaModelTemplate;
 use MetaModels\Factory as MetaModelFactory;
-use MetaModels\Filter\Rules\StaticIdList as MetaModelFilterRuleStaticIdList;
 
 /**
  * This is the MetaModelAttribute class for handling tag attributes.
@@ -25,7 +28,7 @@ use MetaModels\Filter\Rules\StaticIdList as MetaModelFilterRuleStaticIdList;
  * @package    MetaModels
  * @subpackage AttributeTags
  */
-class MetaModelAttributeLinkedTags extends MetaModelAttributeComplex
+class LinkedTags extends MetaModelAttributeHybrid
 {
 
 	/**
@@ -154,7 +157,7 @@ class MetaModelAttributeLinkedTags extends MetaModelAttributeComplex
 			$objFilter = $objMetaModel->getEmptyFilter();
 
 			// Set Filter and co.
-			$objFilterSettings = MetaModelFilterSettingsFactory::byId($intFilterId);
+			$objFilterSettings = FilterSettingFactory::byId($intFilterId);
 			if ($objFilterSettings)
 			{
 				$arrValues			 = $_GET;
@@ -243,7 +246,7 @@ class MetaModelAttributeLinkedTags extends MetaModelAttributeComplex
 
 		if ($strMMName && $strDisplayedValue)
 		{
-			$objDB		 = Database::getInstance();
+			$objDB		 = \Database::getInstance();
 			$objValue	 = $objDB->prepare(sprintf('
 					SELECT *
 					FROM tl_metamodel_tag_relation			
@@ -272,7 +275,7 @@ class MetaModelAttributeLinkedTags extends MetaModelAttributeComplex
 			$objMetaModel = MetaModelFactory::byTableName($strMMName);
 
 			$objFilter	 = $objMetaModel->getEmptyFilter();
-			$objFilter->addFilterRule(new MetaModelFilterRuleStaticIdList($arrKnownValues));
+			$objFilter->addFilterRule(new StaticIdList($arrKnownValues));
 			$objItems	 = $objMetaModel->findByFilter($objFilter);
 
 			// Reset language.
@@ -301,7 +304,7 @@ class MetaModelAttributeLinkedTags extends MetaModelAttributeComplex
 
 	public function setDataFor($arrValues)
 	{
-		$objDB		 = Database::getInstance();
+		$objDB		 = \Database::getInstance();
 		$arrItemIds	 = array_map('intval', array_keys($arrValues));
 		sort($arrItemIds);
 
@@ -398,8 +401,8 @@ class MetaModelAttributeLinkedTags extends MetaModelAttributeComplex
 		if ($arrIds)
 		{
 			if (!is_array($arrIds))
-				throw new Exception('MetaModelAttributeTags::unsetDataFor() invalid parameter given! Array of ids is needed.', 1);
-			$objDB = Database::getInstance();
+				throw new \Exception('MetaModelAttributeTags::unsetDataFor() invalid parameter given! Array of ids is needed.', 1);
+			$objDB = \Database::getInstance();
 			$objDB->prepare(sprintf('
 				DELETE FROM tl_metamodel_tag_relation
 				WHERE

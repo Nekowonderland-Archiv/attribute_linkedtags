@@ -16,6 +16,6 @@
 
 $GLOBALS['METAMODELS']['attributes']['linkedtags'] = array
 (
-	'class' => 'MetaModelAttributeLinkedTags',
+	'class' => 'MetaModels\Attribute\Tags\LinkedTags',
 	'image' => 'system/modules/metamodelsattribute_linkedtags/html/tags.png'
 );
