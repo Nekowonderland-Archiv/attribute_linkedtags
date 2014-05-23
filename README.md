@@ -1,2 +1,4 @@
-attribute_linkedtags
-====================
+Tags
+====
+
+The tags attribute for MetaModels to MetaModels
