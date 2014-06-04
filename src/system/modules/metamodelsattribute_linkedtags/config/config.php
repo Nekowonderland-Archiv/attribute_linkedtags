@@ -19,3 +19,6 @@ $GLOBALS['METAMODELS']['attributes']['linkedtags'] = array
 	'class' => 'MetaModels\Attribute\Tags\LinkedTags',
 	'image' => 'system/modules/metamodelsattribute_linkedtags/html/tags.png'
 );
+
+$GLOBALS['TL_EVENTS'][\ContaoCommunityAlliance\Contao\EventDispatcher\Event\CreateEventDispatcherEvent::NAME][] =
+	'MetaModels\DcGeneral\Events\Table\Attribute\LinkedTags\PropertyAttribute::registerEvents';

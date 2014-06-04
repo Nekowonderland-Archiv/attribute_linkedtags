@@ -21,8 +21,8 @@
  */
 ClassLoader::addClasses(array
 (
-    'MetaModels\Attribute\Tags\LinkedTags' => 'system/modules/metamodelsattribute_linkedtags/MetaModels/Attribute/Tags/LinkedTags.php',
-    'MetaModels\Dca\AttributeLinkedTags'     => 'system/modules/metamodelsattribute_linkedtags/MetaModels/Dca/AttributeLinkedTags.php',
+	'MetaModels\Attribute\Tags\LinkedTags'                                     => 'system/modules/metamodelsattribute_linkedtags/MetaModels/Attribute/Tags/LinkedTags.php',
+	'MetaModels\DcGeneral\Events\Table\Attribute\LinkedTags\PropertyAttribute' => 'system/modules/metamodelsattribute_linkedtags/MetaModels/DcGeneral/Events/Table/Attribute/LinkedTags/PropertyAttribute.php',
 ));
 
 
@@ -31,5 +31,5 @@ ClassLoader::addClasses(array
  */
 TemplateLoader::addFiles(array
 (
-    'mm_attr_linkedtags' => 'system/modules/metamodelsattribute_linkedtags/templates',
+	'mm_attr_linkedtags' => 'system/modules/metamodelsattribute_linkedtags/templates',
 ));
