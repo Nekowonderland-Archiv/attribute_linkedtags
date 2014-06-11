@@ -17,10 +17,12 @@
 namespace MetaModels\DcGeneral\Events\Table\Attribute\LinkedTags;
 
 use ContaoCommunityAlliance\Contao\EventDispatcher\Event\CreateEventDispatcherEvent;
+use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\BuildWidgetEvent;
 use ContaoCommunityAlliance\DcGeneral\Contao\View\Contao2BackendView\Event\GetPropertyOptionsEvent;
 use ContaoCommunityAlliance\DcGeneral\Factory\Event\BuildDataDefinitionEvent;
 use MetaModels\DcGeneral\Events\BaseSubscriber;
 use MetaModels\Factory;
+use MetaModels\Filter\Setting\Factory as FilterFactory;
 
 /**
  * Handle events for tl_metamodel_attribute.alias_fields.attr_id.
@@ -94,9 +96,49 @@ class PropertyAttribute
 			$dispatcher,
 			array('tl_metamodel_attribute', 'mm_filter')
 		);
+
+		self::registerListeners(
+			array(
+				BuildWidgetEvent::NAME => __CLASS__ . '::getFiltersParams',
+			),
+			$dispatcher,
+			array('tl_metamodel_attribute', 'mm_filterparams')
+		);
 	}
 
 	//---------------------------------------------------------------------------------------
+
+	/**
+	 * Set the subfields for the subdca based in the mm_filter selection.
+	 *
+	 * @param BuildWidgetEvent $event
+	 */
+	public static function getFiltersParams(BuildWidgetEvent $event)
+	{
+		$model      = $event->getModel();
+		$properties = $event->getProperty();
+		$arrExtra   = $properties->getExtra();
+		$filterId   = $model->getProperty('mm_filter');
+		$type       = $model->getProperty('type');
+
+		// Check if we have a filter, if not return.
+		if (empty($filterId) || $type != 'linkedtags')
+		{
+			return;
+		}
+
+		// Get the filter with the given id and check if we got it.
+		// If not return.
+		$objFilterSettings = FilterFactory::byId($filterId);
+		if ($objFilterSettings == null)
+		{
+			return;
+		}
+
+		// Set the subfields.
+		$arrExtra['subfields'] = $objFilterSettings->getParameterDCA();
+		$properties->setExtra($arrExtra);
+	}
 
 	/**
 	 * Return a list with all metamodels.
