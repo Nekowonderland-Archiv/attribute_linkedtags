@@ -96,9 +96,9 @@ class LinkedTags extends MetaModelAttributeHybrid
 			$arrFieldDef['inputType'] = 'checkbox';
 		}
 
-		$arrFieldDef['options']						 = $this->getFilterOptions(NULL, false);
-		$arrFieldDef['eval']['includeBlankOption']	 = true;
-		$arrFieldDef['eval']['multiple']			 = true;
+		$arrFieldDef['options']                    = $this->getFilterOptions(null, false);
+		$arrFieldDef['eval']['includeBlankOption'] = true;
+		$arrFieldDef['eval']['multiple']           = true;
 		return $arrFieldDef;
 	}
 
@@ -116,11 +116,11 @@ class LinkedTags extends MetaModelAttributeHybrid
 
 		foreach ($varValue as $mixItem)
 		{
-			if(is_array($mixItem) && isset($mixItem['id']))
+			if (is_array($mixItem) && isset($mixItem['id']))
 			{
 				$arrReturn[] = $mixItem['id'];
 			}
-			elseif(!is_array($mixItem))
+			elseif (!is_array($mixItem))
 			{
 				$arrReturn[] = $mixItem;
 			}
@@ -145,10 +145,10 @@ class LinkedTags extends MetaModelAttributeHybrid
 	 */
 	public function getFilterOptions($arrIds, $usedOnly, &$arrCount = null)
 	{
-		$strMMName			 = $this->get('mm_table');
-		$strDisplayedValue	 = $this->get('mm_displayedValue');
-		$strSortingValue	 = $this->get('mm_sorting') ? $this->get('mm_sorting') : 'id';
-		$intFilterId		 = $this->get('mm_filter');
+		$strMMName         = $this->get('mm_table');
+		$strDisplayedValue = $this->get('mm_displayedValue');
+		$strSortingValue   = $this->get('mm_sorting') ? $this->get('mm_sorting') : 'id';
+		$intFilterId       = $this->get('mm_filter');
 		$arrFilterParams   = (array) $this->get('mm_filterparams');
 
 		$arrReturn = array();
@@ -158,25 +158,21 @@ class LinkedTags extends MetaModelAttributeHybrid
 			// Change language.
 			if (TL_MODE == 'BE')
 			{
-				$strCurrentLanguage		 = $GLOBALS['TL_LANGUAGE'];
-				$GLOBALS['TL_LANGUAGE']	 = $this->getMetaModel()->getActiveLanguage();
+				$strCurrentLanguage     = $GLOBALS['TL_LANGUAGE'];
+				$GLOBALS['TL_LANGUAGE'] = $this->getMetaModel()->getActiveLanguage();
 			}
 
 			$objMetaModel = MetaModelFactory::byTableName($strMMName);
-			if($objMetaModel == null)
-			{
-				return $arrReturn;
-			}
-			$objFilter = $objMetaModel->getEmptyFilter();
+			$objFilter    = $objMetaModel->getEmptyFilter();
 
 			// Set Filter and co.
 			$objFilterSettings = FilterSettingFactory::byId($intFilterId);
 			if ($objFilterSettings)
 			{
-				$arrValues			 = $_GET;
+				$arrValues         = $_GET;
 				$arrPresets        = $arrFilterParams;
-				$arrPresetNames		 = $objFilterSettings->getParameters();
-				$arrFEFilterParams	 = array_keys($objFilterSettings->getParameterFilterNames());
+				$arrPresetNames    = $objFilterSettings->getParameters();
+				$arrFEFilterParams = array_keys($objFilterSettings->getParameterFilterNames());
 
 				$arrProcessed = array();
 
@@ -206,10 +202,10 @@ class LinkedTags extends MetaModelAttributeHybrid
 						$arrProcessed[$strParameter] = $arrValues[$strParameter];
 					}
 				}
-				
+
 				$objFilterSettings->addRules($objFilter, $arrProcessed);
 			}
-			
+
 			$objItems = $objMetaModel->findByFilter($objFilter, $strSortingValue);
 
 			// Reset language.
@@ -222,8 +218,8 @@ class LinkedTags extends MetaModelAttributeHybrid
 			{
 				$arrItem = $objItem->parseValue();
 
-				$strValue	 = $arrItem['text'][$strDisplayedValue];
-				$strAlias	 = $objItem->get('id');
+				$strValue = $arrItem['text'][$strDisplayedValue];
+				$strAlias = $objItem->get('id');
 
 				$arrReturn[$strAlias] = $strValue;
 			}
@@ -251,45 +247,45 @@ class LinkedTags extends MetaModelAttributeHybrid
 	{
 		$arrReturn = array();
 
-		$strMetaModelTableName	 = $this->getMetaModel()->getTableName();
+		$strMetaModelTableName   = $this->getMetaModel()->getTableName();
 		$strMetaModelTableNameId = $strMetaModelTableName . '_id';
 
-		$strMMName			 = $this->get('mm_table');
-		$strDisplayedValue	 = $this->get('mm_displayedValue');
+		$strMMName         = $this->get('mm_table');
+		$strDisplayedValue = $this->get('mm_displayedValue');
 
 		if ($strMMName && $strDisplayedValue)
 		{
-			$objDB		 = \Database::getInstance();
-			$objValue	 = $objDB->prepare(sprintf('
+			$objDB    = \Database::getInstance();
+			$objValue = $objDB->prepare(sprintf('
 					SELECT *
 					FROM tl_metamodel_tag_relation			
 					WHERE item_id IN (%1$s) AND att_id=?
 					ORDER BY tl_metamodel_tag_relation.value_sorting', implode(',', $arrIds) // 1
-					))
-					->execute($this->get('id'));
+			))
+				->execute($this->get('id'));
 
-			$arrKnownValues	 = array();
-			$arrItemId		 = array();
+			$arrKnownValues = array();
+			$arrItemId      = array();
 
 			while ($objValue->next())
 			{
-				$arrKnownValues[]				 = $objValue->value_id;
-				$arrItemId[$objValue->value_id]	 = $objValue->item_id;
+				$arrKnownValues[]               = $objValue->value_id;
+				$arrItemId[$objValue->value_id] = $objValue->item_id;
 			}
 
 			// Change language.
 			if (TL_MODE == 'BE')
 			{
-				$strCurrentLanguage		 = $GLOBALS['TL_LANGUAGE'];
-				$GLOBALS['TL_LANGUAGE']	 = $this->getMetaModel()->getActiveLanguage();
+				$strCurrentLanguage     = $GLOBALS['TL_LANGUAGE'];
+				$GLOBALS['TL_LANGUAGE'] = $this->getMetaModel()->getActiveLanguage();
 			}
 
 			// Get data from MM.
 			$objMetaModel = MetaModelFactory::byTableName($strMMName);
 
-			$objFilter	 = $objMetaModel->getEmptyFilter();
+			$objFilter = $objMetaModel->getEmptyFilter();
 			$objFilter->addFilterRule(new StaticIdList($arrKnownValues));
-			$objItems	 = $objMetaModel->findByFilter($objFilter);
+			$objItems = $objMetaModel->findByFilter($objFilter);
 
 			// Reset language.
 			if (TL_MODE == 'BE')
@@ -299,16 +295,16 @@ class LinkedTags extends MetaModelAttributeHybrid
 
 			foreach ($objItems as $objItem)
 			{
-				$objMMID	 = $objItem->get('id');
-				$mixID		 = $arrItemId[$objMMID];
-				$arrValues	 = $objItem->parseValue();
+				$objMMID   = $objItem->get('id');
+				$mixID     = $arrItemId[$objMMID];
+				$arrValues = $objItem->parseValue();
 
 				$arrReturn[$mixID][] = array_merge(array(
-					'id'		 => $arrValues['raw']['id'],
-					'pid'		 => $arrValues['raw']['pid'],
-					'sorting'	 => $arrValues['raw']['sorting'],
-					'tstamp'	 => $arrValues['raw']['tstamp'],
-						), $arrValues['text']);
+					'id'      => $arrValues['raw']['id'],
+					'pid'     => $arrValues['raw']['pid'],
+					'sorting' => $arrValues['raw']['sorting'],
+					'tstamp'  => $arrValues['raw']['tstamp'],
+				), $arrValues['text']);
 			}
 		}
 
@@ -317,8 +313,8 @@ class LinkedTags extends MetaModelAttributeHybrid
 
 	public function setDataFor($arrValues)
 	{
-		$objDB		 = \Database::getInstance();
-		$arrItemIds	 = array_map('intval', array_keys($arrValues));
+		$objDB      = \Database::getInstance();
+		$arrItemIds = array_map('intval', array_keys($arrValues));
 		sort($arrItemIds);
 
 		// load all existing tags for all items to be updated, keep the ordering to item Id
@@ -330,9 +326,7 @@ class LinkedTags extends MetaModelAttributeHybrid
 				AND item_id IN (%1$s)
 				ORDER BY item_id ASC
 				', implode(',', $arrItemIds)))
-				->execute($this->get('id'));
-
-
+			->execute($this->get('id'));
 
 		// now loop over all items and update the values for them.
 		// NOTE: we can not loop over the original array, as the item ids are not neccessarily
@@ -374,7 +368,7 @@ class LinkedTags extends MetaModelAttributeHybrid
 				AND item_id=?
 				AND value_id IN (%s)
 				', implode(',', $arrValuesToRemove)))
-						->execute($this->get('id'), $intItemId);
+					->execute($this->get('id'), $intItemId);
 			}
 			// second pass, add all new values in a row.
 			$arrValuesToAdd = array_diff($arrTagIds, $arrThisExisting);
@@ -398,7 +392,7 @@ class LinkedTags extends MetaModelAttributeHybrid
 						att_id=?
 						AND item_id=?
 						AND value_id=?')
-							->execute($this->get('id'), $intItemId, $intValueId);
+						->execute($this->get('id'), $intItemId, $intValueId);
 				}
 			}
 		}
@@ -414,7 +408,9 @@ class LinkedTags extends MetaModelAttributeHybrid
 		if ($arrIds)
 		{
 			if (!is_array($arrIds))
+			{
 				throw new \Exception('MetaModelAttributeTags::unsetDataFor() invalid parameter given! Array of ids is needed.', 1);
+			}
 			$objDB = \Database::getInstance();
 			$objDB->prepare(sprintf('
 				DELETE FROM tl_metamodel_tag_relation
