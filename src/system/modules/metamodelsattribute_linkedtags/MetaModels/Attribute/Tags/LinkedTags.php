@@ -71,6 +71,7 @@ class LinkedTags extends MetaModelAttributeHybrid
 			'mm_displayedValue',
 			'mm_sorting',
 			'mm_filter',
+			'mm_filterparams',
 			'mandatory',
 			'filterable',
 			'searchable',
@@ -148,6 +149,7 @@ class LinkedTags extends MetaModelAttributeHybrid
 		$strDisplayedValue	 = $this->get('mm_displayedValue');
 		$strSortingValue	 = $this->get('mm_sorting') ? $this->get('mm_sorting') : 'id';
 		$intFilterId		 = $this->get('mm_filter');
+		$arrFilterParams   = (array) $this->get('mm_filterparams');
 
 		$arrReturn = array();
 
@@ -172,7 +174,7 @@ class LinkedTags extends MetaModelAttributeHybrid
 			if ($objFilterSettings)
 			{
 				$arrValues			 = $_GET;
-				$arrPresets			 = deserialize($this->metamodel_filterparams, true);
+				$arrPresets        = $arrFilterParams;
 				$arrPresetNames		 = $objFilterSettings->getParameters();
 				$arrFEFilterParams	 = array_keys($objFilterSettings->getParameterFilterNames());
 
