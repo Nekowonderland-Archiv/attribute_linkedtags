@@ -16,6 +16,7 @@ CREATE TABLE `tl_metamodel_attribute` (
   `mm_displayedValue` varchar(255) NOT NULL default '',
   `mm_sorting` varchar(255) NOT NULL default '',
   `mm_filter` int(11) unsigned NOT NULL default '0',
+  `mm_filterparams` text NULL,
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- 

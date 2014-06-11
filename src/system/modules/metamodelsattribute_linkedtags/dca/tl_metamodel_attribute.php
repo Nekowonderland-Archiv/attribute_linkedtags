@@ -94,19 +94,11 @@ $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['mm_filter'] = array
 
 $GLOBALS['TL_DCA']['tl_metamodel_attribute']['fields']['mm_filterparams'] = array
 (
-    'label'     => &$GLOBALS['TL_LANG']['tl_content']['mm_filterparams'],
-    'exclude'   => true,
-    'inputType' => 'mm_subdca',
-    'eval'      => array
-    (
-        'tl_class'   => 'clr m12',
-        'flagfields' => array
-        (
-            'use_get' => array
-            (
-                'label'     => &$GLOBALS['TL_LANG']['tl_content']['metamodel_filterparams_use_get'],
-                'inputType' => 'checkbox'
-            ),
-        ),
-    )
+	'label'     => &$GLOBALS['TL_LANG']['tl_metamodel_attribute']['mm_filterparams'],
+	'exclude'   => true,
+	'inputType' => 'mm_subdca',
+	'eval'      => array
+	(
+		'tl_class'   => 'clr m12'
+	)
 );
