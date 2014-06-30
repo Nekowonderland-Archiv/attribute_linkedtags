@@ -83,7 +83,7 @@ class PropertyAttribute
 
 		self::registerListeners(
 			array(
-				GetPropertyOptionsEvent::NAME => __CLASS__ . '::getColumnNames',
+				GetPropertyOptionsEvent::NAME => __CLASS__ . '::getColumnNamesWithMeta',
 			),
 			$dispatcher,
 			array('tl_metamodel_attribute', 'mm_sorting')
@@ -197,6 +197,64 @@ class PropertyAttribute
 
 			$event->setOptions($result);
 		}
+	}
+
+	/**
+	 * Get a list with all attributes of the current metamodels.
+	 *
+	 * @param GetPropertyOptionsEvent $event
+	 *
+	 * @return void
+	 */
+	public static function getColumnNamesWithMeta(GetPropertyOptionsEvent $event)
+	{
+		$resultMM         = array();
+		$resultDatabase   = array();
+		$model            = $event->getModel();
+		$metaModelsNames  = Factory::getAllTables();
+		$currentMetaModel = $model->getProperty('mm_table');
+		$database          = \Database::getInstance();
+
+		// Get all attributes.
+		if (!empty($currentMetaModel) && in_array($currentMetaModel, $metaModelsNames))
+		{
+			$metaModel = Factory::byTableName($currentMetaModel);
+
+			foreach ($metaModel->getAttributes() as $attribute)
+			{
+				$strName   = $attribute->getName();
+				$strColumn = $attribute->getColName();
+				$strType   = $attribute->get('type');
+
+				$resultMM[$strColumn] = vsprintf("%s (%s - %s)", array($strName, $strColumn, $strType));
+			}
+		}
+
+		// Get all meta fields.
+		if ($currentMetaModel && $database->tableExists($currentMetaModel))
+		{
+			foreach ($database->listFields($currentMetaModel) as $arrInfo)
+			{
+				// Check if we have not already add as normal field.
+				if(isset($resultMM[$arrInfo['name']]))
+				{
+					continue;
+				}
+
+				// If not a index add it to the list.
+				if ($arrInfo['type'] != 'index')
+				{
+					$resultDatabase[$arrInfo['name']] = $arrInfo['name'];
+				}
+			}
+		}
+
+		$event->setOptions(array
+			(
+				$GLOBALS['TL_LANG']['tl_metamodel_attribute']['mm_sorting_headlines']['meta']    => $resultDatabase,
+				$GLOBALS['TL_LANG']['tl_metamodel_attribute']['mm_sorting_headlines']['default'] => $resultMM
+			)
+		);
 	}
 
 	/**
