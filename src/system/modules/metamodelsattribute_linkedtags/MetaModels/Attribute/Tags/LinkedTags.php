@@ -150,10 +150,11 @@ class LinkedTags extends MetaModelAttributeHybrid
 		$strSortingValue   = $this->get('mm_sorting') ? $this->get('mm_sorting') : 'id';
 		$intFilterId       = $this->get('mm_filter');
 		$arrFilterParams   = (array) $this->get('mm_filterparams');
+		$objMetaModel      = MetaModelFactory::byTableName($strMMName);
 
 		$arrReturn = array();
 
-		if ($strMMName && $strDisplayedValue)
+		if ($strMMName && $objMetaModel && $strDisplayedValue)
 		{
 			// Change language.
 			if (TL_MODE == 'BE')
@@ -162,7 +163,6 @@ class LinkedTags extends MetaModelAttributeHybrid
 				$GLOBALS['TL_LANGUAGE'] = $this->getMetaModel()->getActiveLanguage();
 			}
 
-			$objMetaModel = MetaModelFactory::byTableName($strMMName);
 			$objFilter    = $objMetaModel->getEmptyFilter();
 
 			// Set Filter and co.
@@ -253,7 +253,10 @@ class LinkedTags extends MetaModelAttributeHybrid
 		$strMMName         = $this->get('mm_table');
 		$strDisplayedValue = $this->get('mm_displayedValue');
 
-		if ($strMMName && $strDisplayedValue)
+		// Get the MetaModels and check if we have one.
+		$objMetaModel = MetaModelFactory::byTableName($strMMName);
+
+		if ($strMMName && $objMetaModel && $strDisplayedValue)
 		{
 			$objDB    = \Database::getInstance();
 			$objValue = $objDB->prepare(sprintf('
@@ -279,9 +282,6 @@ class LinkedTags extends MetaModelAttributeHybrid
 				$strCurrentLanguage     = $GLOBALS['TL_LANGUAGE'];
 				$GLOBALS['TL_LANGUAGE'] = $this->getMetaModel()->getActiveLanguage();
 			}
-
-			// Get data from MM.
-			$objMetaModel = MetaModelFactory::byTableName($strMMName);
 
 			$objFilter = $objMetaModel->getEmptyFilter();
 			$objFilter->addFilterRule(new StaticIdList($arrKnownValues));
