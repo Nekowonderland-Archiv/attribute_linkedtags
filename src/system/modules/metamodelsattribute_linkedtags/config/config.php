@@ -14,11 +14,23 @@
  * @filesource
  */
 
+/**
+ * Basic settings.
+ */
 $GLOBALS['METAMODELS']['attributes']['linkedtags'] = array
 (
 	'class' => 'MetaModels\Attribute\Tags\LinkedTags',
 	'image' => 'system/modules/metamodelsattribute_linkedtags/html/tags.png'
 );
 
+/**
+ * Events.
+ */
 $GLOBALS['TL_EVENTS'][\ContaoCommunityAlliance\Contao\EventDispatcher\Event\CreateEventDispatcherEvent::NAME][] =
 	'MetaModels\DcGeneral\Events\Table\Attribute\LinkedTags\PropertyAttribute::registerEvents';
+
+/**
+ * Add to the filter list.
+ */
+$GLOBALS['METAMODELS']['filters']['select']['attr_filter'][] = 'linkedtags';
+$GLOBALS['METAMODELS']['filters']['tags']['attr_filter'][]   = 'linkedtags';

@@ -23,6 +23,7 @@ ClassLoader::addClasses(array
 (
 	'MetaModels\Attribute\Tags\LinkedTags'                                     => 'system/modules/metamodelsattribute_linkedtags/MetaModels/Attribute/Tags/LinkedTags.php',
 	'MetaModels\DcGeneral\Events\Table\Attribute\LinkedTags\PropertyAttribute' => 'system/modules/metamodelsattribute_linkedtags/MetaModels/DcGeneral/Events/Table/Attribute/LinkedTags/PropertyAttribute.php',
+	'MetaModels\Filter\Rules\FilterRuleLinkedTags'                             => 'system/modules/metamodelsattribute_linkedtags/MetaModels/Filter/Rules/FilterRuleLinkedTags.php',
 ));
 
 

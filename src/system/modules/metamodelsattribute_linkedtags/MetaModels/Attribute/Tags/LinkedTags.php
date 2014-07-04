@@ -17,6 +17,8 @@
 namespace MetaModels\Attribute\Tags;
 
 use MetaModels\Attribute\AbstractHybrid as MetaModelAttributeHybrid;
+use MetaModels\Filter\Rules\FilterRuleLinkedTags;
+use MetaModels\Filter\Rules\FilterRuleTags;
 use MetaModels\Filter\Rules\StaticIdList;
 use MetaModels\Filter\Setting\Factory as FilterSettingFactory;
 use MetaModels\Render\Template as MetaModelTemplate;
@@ -149,7 +151,7 @@ class LinkedTags extends MetaModelAttributeHybrid
 		$strDisplayedValue = $this->get('mm_displayedValue');
 		$strSortingValue   = $this->get('mm_sorting') ? $this->get('mm_sorting') : 'id';
 		$intFilterId       = $this->get('mm_filter');
-		$arrFilterParams   = (array) $this->get('mm_filterparams');
+		$arrFilterParams   = (array)$this->get('mm_filterparams');
 		$objMetaModel      = MetaModelFactory::byTableName($strMMName);
 
 		$arrReturn = array();
@@ -163,7 +165,7 @@ class LinkedTags extends MetaModelAttributeHybrid
 				$GLOBALS['TL_LANGUAGE'] = $this->getMetaModel()->getActiveLanguage();
 			}
 
-			$objFilter    = $objMetaModel->getEmptyFilter();
+			$objFilter = $objMetaModel->getEmptyFilter();
 
 			// Set Filter and co.
 			$objFilterSettings = FilterSettingFactory::byId($intFilterId);
@@ -206,6 +208,39 @@ class LinkedTags extends MetaModelAttributeHybrid
 				$objFilterSettings->addRules($objFilter, $arrProcessed);
 			}
 
+			// Add some more filters.
+			if ($arrIds && is_array($arrIds))
+			{
+				$objFilter->addFilterRule(new StaticIdList($arrIds));
+			}
+
+			if ($arrIds && is_array($arrIds) && $usedOnly)
+			{
+				$strSQL = '
+						SELECT %1$s.%2$s
+						FROM %1$s
+						LEFT JOIN tl_metamodel_tag_relation ON (
+							(tl_metamodel_tag_relation.att_id=?)
+							AND (tl_metamodel_tag_relation.value_id=%1$s.%2$s)
+						)
+						WHERE (tl_metamodel_tag_relation.item_id IN (%3$s))
+						ORDER BY %1$s.%4$s
+					';
+
+				$objValue = \Database::getInstance()
+					->prepare(sprintf(
+					$strSQL,
+					// @codingStandardsIgnoreStart - We want to keep the numbers as comment at the end of the following lines.
+					$strMMName, // 1
+					'id', // 2
+					implode(',', $arrIds), // 3
+					$strSortingValue // 4
+				// @codingStandardsIgnoreEnd
+				))->execute($this->get('id'));
+
+				$objFilter->addFilterRule(new StaticIdList($objValue->fetchEach('id')));
+			}
+
 			$objItems = $objMetaModel->findByFilter($objFilter, $strSortingValue);
 
 			// Reset language.
@@ -233,10 +268,8 @@ class LinkedTags extends MetaModelAttributeHybrid
 	 */
 	public function searchFor($strPattern)
 	{
-//		$objFilterRule = new MetaModelFilterRuleTags($this, $strPattern);
-//		return $objFilterRule->getMatchingIds();
-
-		return array();
+		$objFilterRule = new FilterRuleLinkedTags($this, $strPattern);
+		return $objFilterRule->getMatchingIds();
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -261,7 +294,7 @@ class LinkedTags extends MetaModelAttributeHybrid
 			$objDB    = \Database::getInstance();
 			$objValue = $objDB->prepare(sprintf('
 					SELECT *
-					FROM tl_metamodel_tag_relation			
+					FROM tl_metamodel_tag_relation
 					WHERE item_id IN (%1$s) AND att_id=?
 					ORDER BY tl_metamodel_tag_relation.value_sorting', implode(',', $arrIds) // 1
 			))
