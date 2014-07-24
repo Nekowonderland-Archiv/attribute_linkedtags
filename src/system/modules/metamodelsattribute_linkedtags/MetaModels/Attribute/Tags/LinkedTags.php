@@ -305,8 +305,8 @@ class LinkedTags extends MetaModelAttributeHybrid
 
 			while ($objValue->next())
 			{
-				$arrKnownValues[]               = $objValue->value_id;
-				$arrItemId[$objValue->value_id] = $objValue->item_id;
+				$arrKnownValues[]                 = $objValue->value_id;
+				$arrItemId[$objValue->value_id][] = $objValue->item_id;
 			}
 
 			// Change language.
@@ -332,12 +332,15 @@ class LinkedTags extends MetaModelAttributeHybrid
 				$mixID     = $arrItemId[$objMMID];
 				$arrValues = $objItem->parseValue();
 
-				$arrReturn[$mixID][] = array_merge(array(
-					'id'      => $arrValues['raw']['id'],
-					'pid'     => $arrValues['raw']['pid'],
-					'sorting' => $arrValues['raw']['sorting'],
-					'tstamp'  => $arrValues['raw']['tstamp'],
-				), $arrValues['text']);
+				foreach ((array) $mixID as $intId)
+				{
+					$arrReturn[$intId][] = array_merge(array(
+						'id'      => $arrValues['raw']['id'],
+						'pid'     => $arrValues['raw']['pid'],
+						'sorting' => $arrValues['raw']['sorting'],
+						'tstamp'  => $arrValues['raw']['tstamp'],
+					), $arrValues['text']);
+				}
 			}
 		}
 
