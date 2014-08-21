@@ -14,13 +14,17 @@
  * @filesource
  */
 
+namespace MetaModels\Dca;
+
+use MetaModels\Factory;
+
 /**
  * Supplementary class for handling DCA information for select attributes.
  *
  * @package	   MetaModels
  * @subpackage AttributeTags
  */
-class TableMetaModelsAttributeLinkedTags extends TableMetaModelAttribute
+class AttributeLinkedTags
 {
 
 	/**
@@ -43,70 +47,82 @@ class TableMetaModelsAttributeLinkedTags extends TableMetaModelAttribute
 		return self::$objInstance;
 	}
 
-	public function getMMNames()
-	{
-		$arrRetrun = array();
-		$arrTables = MetaModelFactory::getAllTables();
+    public function getMMNames()
+    {
+        $arrRetrun = array();
+        $arrTables = Factory::getAllTables();
 
-		foreach ($arrTables as $strMMName)
-		{
-			$objMM = MetaModelFactory::byTableName($strMMName);
-			if ($objMM->isTranslated())
-			{
-				$arrRetrun['Translated'][$strMMName] = sprintf('%s (%s)', $objMM->get('name'), $strMMName);
-			}
-			else
-			{
-				$arrRetrun['None Translated'][$strMMName] = sprintf('%s (%s)', $objMM->get('name'), $strMMName);
-				;
-			}
-		}
+        foreach ($arrTables as $strMMName)
+        {
+            $objMM = Factory::byTableName($strMMName);
+            if ($objMM->isTranslated())
+            {
+                $arrRetrun['Translated'][$strMMName] = sprintf('%s (%s)', $objMM->get('name'), $strMMName);
+            }
+            else
+            {
+                $arrRetrun['None Translated'][$strMMName] = sprintf('%s (%s)', $objMM->get('name'), $strMMName);;
+            }
+        }
 
-		return $arrRetrun;
-	}
+        return $arrRetrun;
+    }
 
-	public function getColumnNames(DataContainer $objDC)
-	{
-		$arrRetrun = array();
-		$arrMMTables = MetaModelFactory::getAllTables();
+	/**
+     * @param DcGeneral\DC_General $objDC
+     *
+     * @return array
+     */
+    public function getColumnNames($objDC)
+    {
+        $arrRetrun   = array();
+        $arrMMTables = Factory::getAllTables();
+        $objModel    = $objDC->getEnvironment()->getCurrentModel();
 
-		if (($objDC->getCurrentModel()) && in_array($objDC->getCurrentModel()->getProperty('mm_table'), $arrMMTables))
-		{
-			$objMM = MetaModelFactory::byTableName($objDC->getCurrentModel()->getProperty('mm_table'));
 
-			foreach ($objMM->getAttributes() as $objAttribute)
-			{				
-				$strName = $objAttribute->getName();
-				$strColumn = $objAttribute->getColName();
-				$strType = $objAttribute->get('type');
+        if (($objModel) && in_array($objModel->getProperty('mm_table'), $arrMMTables))
+        {
+            $objMM = Factory::byTableName($objModel->getProperty('mm_table'));
 
-				$arrRetrun[$strColumn] = vsprintf("%s (%s - %s)", array($strName, $strColumn, $strType));
-			}
-		}
+            foreach ($objMM->getAttributes() as $objAttribute)
+            {
+                $strName   = $objAttribute->getName();
+                $strColumn = $objAttribute->getColName();
+                $strType   = $objAttribute->get('type');
 
-		return $arrRetrun;
-	}
+                $arrRetrun[$strColumn] = vsprintf("%s (%s - %s)", array($strName, $strColumn, $strType));
+            }
+        }
+
+        return $arrRetrun;
+    }
 	
-	public function getFilters(DataContainer $objDC)
-	{
-		$arrRetrun = array();
-		$arrMMTables = MetaModelFactory::getAllTables();
+    /**
+     * @param DcGeneral\DC_General $objDC
+     *
+     * @return array
+     */
+    public function getFilters($objDC)
+    {
+        $arrRetrun   = array();
+        $arrMMTables = Factory::getAllTables();
+        $objModel    = $objDC->getEnvironment()->getCurrentModel();
 
-		if (($objDC->getCurrentModel()) && in_array($objDC->getCurrentModel()->getProperty('mm_table'), $arrMMTables))
-		{
-			$objMM = MetaModelFactory::byTableName($objDC->getCurrentModel()->getProperty('mm_table'));
+        if (($objModel) && in_array($objModel->getProperty('mm_table'), $arrMMTables))
+        {
+            $objMM = Factory::byTableName($objModel->getProperty('mm_table'));
 
-			$objFilter = $this->Database
-					->prepare("SELECT id,name FROM tl_metamodel_filter WHERE pid=? ORDER BY name")
-					->execute($objMM->get('id'));
+            $objFilter = \Database::getInstance()
+                ->prepare("SELECT id,name FROM tl_metamodel_filter WHERE pid=? ORDER BY name")
+                ->execute($objMM->get('id'));
 
-			while ($objFilter->next())
-			{
-				$arrRetrun[$objFilter->id] = $objFilter->name;
-			}
-		}
+            while ($objFilter->next())
+            {
+                $arrRetrun[$objFilter->id] = $objFilter->name;
+            }
+        }
 
-		return $arrRetrun;
-	}
+        return $arrRetrun;
+    }
 
 }
