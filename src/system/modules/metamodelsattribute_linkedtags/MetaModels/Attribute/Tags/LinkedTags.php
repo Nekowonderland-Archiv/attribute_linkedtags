@@ -376,6 +376,20 @@ class LinkedTags extends MetaModelAttributeHybrid
 			{
 				$arrTagIds = array();
 			}
+			elseif(is_array($arrTags))
+			{
+				foreach($arrTags as $arrRowData)
+				{
+					if(isset($arrRowData['id']))
+					{
+						$arrTagIds[] = $arrRowData['id'];
+					}
+					else
+					{
+						$arrTagIds = array_map('intval', $arrTags);
+					}
+				}
+			}
 			else
 			{
 				$arrTagIds = array_map('intval', $arrTags);
