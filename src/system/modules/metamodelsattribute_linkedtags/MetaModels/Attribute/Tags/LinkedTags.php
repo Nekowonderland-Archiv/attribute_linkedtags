@@ -371,28 +371,33 @@ class LinkedTags extends MetaModelAttributeHybrid
 		foreach ($arrItemIds as $intItemId)
 		{
 			$arrTags = $arrValues[$intItemId];
-
+			$arrTagIds = array();
+			
 			if (is_null($intItemId) || empty($arrTags))
 			{
 				$arrTagIds = array();
 			}
 			elseif(is_array($arrTags))
 			{
-				foreach($arrTags as $arrRowData)
+				foreach($arrTags as $mixRowData)
 				{
-					if(isset($arrRowData['id']))
+					if(array_key_exists('id', $mixRowData))
 					{
-						$arrTagIds[] = $arrRowData['id'];
+						$arrTagIds[] = $mixRowData['id'];
+					}
+					elseif(is_array($mixRowData))
+					{
+						$arrTagIds = array_map('intval', $mixRowData);
 					}
 					else
 					{
-						$arrTagIds = array_map('intval', $arrTags);
+						$arrTagIds[] = $mixRowData;
 					}
 				}
 			}
 			else
 			{
-				$arrTagIds = array_map('intval', $arrTags);
+				$arrTagIds[] = $arrTags;
 			}
 
 			$arrThisExisting = array();
