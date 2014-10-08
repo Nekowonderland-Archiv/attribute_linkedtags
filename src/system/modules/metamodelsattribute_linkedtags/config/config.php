@@ -17,11 +17,18 @@
 /**
  * Basic settings.
  */
+/*
 $GLOBALS['METAMODELS']['attributes']['linkedtags'] = array
 (
-	'class' => 'MetaModels\Attribute\Tags\LinkedTags',
+	'class' => 'MetaModels\Attribute\LinkedTags\LinkedTags',
 	'image' => 'system/modules/metamodelsattribute_linkedtags/html/tags.png'
 );
+*/
+
+$GLOBALS['TL_EVENT_SUBSCRIBERS'][] = 'MetaModels\Attribute\LinkedTags\AttributeTypeFactory';
+$GLOBALS['TL_EVENT_SUBSCRIBERS'][] = 'MetaModels\DcGeneral\Events\MetaModels\BackendSubscriber';
+
+
 
 /**
  * Events.
