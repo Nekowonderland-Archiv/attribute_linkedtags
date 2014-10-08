@@ -14,13 +14,14 @@
  * @filesource
  */
 
-namespace MetaModels\Attribute\Tags;
+namespace MetaModels\Attribute\LinkedTags;
 
 use MetaModels\Attribute\AbstractHybrid as MetaModelAttributeHybrid;
 use MetaModels\Filter\Rules\FilterRuleLinkedTags;
 use MetaModels\Filter\Rules\FilterRuleTags;
 use MetaModels\Filter\Rules\StaticIdList;
 use MetaModels\Filter\Setting\Factory as FilterSettingFactory;
+use MetaModels\IMetaModel;
 use MetaModels\Render\Template as MetaModelTemplate;
 use MetaModels\Factory as MetaModelFactory;
 
@@ -32,6 +33,26 @@ use MetaModels\Factory as MetaModelFactory;
  */
 class LinkedTags extends MetaModelAttributeHybrid
 {
+	/**
+	 * @var IMetaModel
+	 */
+	protected $objLinkedMetaModel;
+
+	/**
+	 * Retrieve the linked MetaModel instance.
+	 *
+	 * @return IMetaModel
+	 */
+	protected function getLinkedMetaModel()
+	{
+		if (empty($this->objLinkedMetaModel))
+		{
+			$strMMName = $this->get('mm_table');
+			$this->objLinkedMetaModel = MetaModelFactory::byTableName($strMMName);
+		}
+
+		return $this->objLinkedMetaModel;
+	}
 
 	/**
 	 * when rendered via a template, this returns the values to be stored in the template.
@@ -98,7 +119,7 @@ class LinkedTags extends MetaModelAttributeHybrid
 			$arrFieldDef['inputType'] = 'checkbox';
 		}
 
-		$arrFieldDef['options']                    = $this->getFilterOptions(null, false);
+		// $arrFieldDef['options']                    = $this->getFilterOptions(null, false);
 		$arrFieldDef['eval']['includeBlankOption'] = true;
 		$arrFieldDef['eval']['multiple']           = true;
 		return $arrFieldDef;
@@ -152,11 +173,11 @@ class LinkedTags extends MetaModelAttributeHybrid
 		$strSortingValue   = $this->get('mm_sorting') ? $this->get('mm_sorting') : 'id';
 		$intFilterId       = $this->get('mm_filter');
 		$arrFilterParams   = (array)$this->get('mm_filterparams');
-		$objMetaModel      = MetaModelFactory::byTableName($strMMName);
+		$objMetaModel      = $this->getLinkedMetaModel();
 
 		$arrReturn = array();
 
-		if ($strMMName && $objMetaModel && $strDisplayedValue)
+		if ($objMetaModel && $strDisplayedValue)
 		{
 			// Change language.
 			if (TL_MODE == 'BE')
@@ -278,18 +299,13 @@ class LinkedTags extends MetaModelAttributeHybrid
 
 	public function getDataFor($arrIds)
 	{
-		$arrReturn = array();
-
-		$strMetaModelTableName   = $this->getMetaModel()->getTableName();
-		$strMetaModelTableNameId = $strMetaModelTableName . '_id';
-
-		$strMMName         = $this->get('mm_table');
+		$arrReturn         = array();
 		$strDisplayedValue = $this->get('mm_displayedValue');
 
 		// Get the MetaModels and check if we have one.
-		$objMetaModel = MetaModelFactory::byTableName($strMMName);
+		$objMetaModel = $this->getLinkedMetaModel();
 
-		if ($strMMName && $objMetaModel && $strDisplayedValue)
+		if ($objMetaModel && $strDisplayedValue)
 		{
 			$objDB    = \Database::getInstance();
 			$objValue = $objDB->prepare(sprintf('
