@@ -397,7 +397,7 @@ class LinkedTags extends MetaModelAttributeHybrid
 			{
 				foreach($arrTags as $mixRowData)
 				{
-					if(array_key_exists('id', $mixRowData))
+					if(is_array($mixRowData) && array_key_exists('id', $mixRowData))
 					{
 						$arrTagIds[] = $mixRowData['id'];
 					}
